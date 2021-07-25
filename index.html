@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Чат программа</title>
+</head>
+<body>
+	<div>
+			<div>
+				<form id="messForm">
+					<textarea name="message" id="message" placeholder="Введите сообщение"></textarea>
+					<br>
+					<input type="button" onclick="sendMessage()" value="Отправить">
+				</form>
+			</div>
+            <div id="messages">
+
+            </div>
+	</div>
+	<script src="/socket.io/socket.io.js"></script>
+	<script>
+        let socket = io.connect();
+        let input = document.getElementById('message');
+        let messages = document.getElementById('messages')
+
+        let name = prompt('What is your name?')
+        let user = {};
+
+        socket.emit('create new user', name);
+
+        function sendMessage() {
+            console.log(input);
+            socket.emit('message', {msg: input.value});
+            input.value = '';
+        };
+
+        socket.on('new message', function(data) {
+            let p = document.createElement('p')
+            messages.append(data.user + ': ' + data.msg, p);
+        })
+	</script>
+</body>
+</html>
